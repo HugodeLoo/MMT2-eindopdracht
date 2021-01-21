@@ -1,9 +1,9 @@
 var yearBubbles = [];
 var placeBubbles = [];
-let timeLineActive = true; myTerminal
+let timeLineActive = true;
+let raceOverlay = false;
 var yearDisplayer = document.getElementById("selectedYear");
 var myTerminal = document.getElementById("myTerminal");
-var Infodiv = document.getElementById("infodiv");
 
 let dataSetF1;
 var formula1Bold;
@@ -78,10 +78,18 @@ function mousePressed() {
       placeBubbles[i].clicked();
     }
   }
-  if (mouseX > 1150 && mouseX < 1725 && mouseY > 665 && mouseY < 997.5) {
-    clear();
-    timeLineActive = true;
-    silenceInfo();
+  if (raceOverlay == false) {
+    if (mouseX > 1150 && mouseX < 1725 && mouseY > 665 && mouseY < 997.5) {
+      clear();
+      timeLineActive = true;
+    }
+  }
+  if (raceOverlay == true) {
+    if (mouseX > 1185 && mouseX < 1400 && mouseY > 640 && mouseY < 670) {
+      clear();
+      raceOverlay = false;
+      drawPlaces();
+    }
   }
 }
 
@@ -104,6 +112,7 @@ function yearIsSelected(year) {
           ellipse(this.x, this.y, this.r*2, this.r*2);
           for (let j = 0; j < 897; j++) {
             if(dataSetF1[j].raceId == this.raceId){
+              textSize(12);
               fill(255, 255, 255);
               text(dataSetF1[j].circuit.circuitRef, this.x, this.y);
             }
@@ -121,6 +130,12 @@ function yearIsSelected(year) {
 
   }
   console.log(placeBubbles);
+  drawPlaces();
+
+}
+
+function drawPlaces() {
+
   for (var j = 0; j < placeBubbles.length; j++) {
     placeBubbles[j].display();
   }
@@ -134,22 +149,36 @@ function yearIsSelected(year) {
 }
 
 function venueIsSelected(raceId) {
+  raceOverlay = true;
+
   for (let i = 0; i < 897; i++) {
     if(dataSetF1[i].raceId == raceId){
       myTerminal.innerHTML = dataSetF1[i].circuit.circuitRef;
 
-      var left = (dataSetF1[i].circuit.lng + 235)+"px";
-      var top = (dataSetF1[i].circuit.lat + 35)+"px";
-      
-      Infodiv.style.left = left ;
-      Infodiv.style.top = top;
-      Infodiv.style.backgroundColor = "aqua";
+      rect(15, 15, 1425, 692, 20);
+
+      stroke(225, 6, 0);
+      strokeWeight(10);
+      noFill();
+      strokeCap(SQUARE);
+
+      beginShape();
+
+      vertex(400, 30);
+      vertex(1410, 30);
+      quadraticVertex(1425, 30, 1425, 45);
+      vertex(1425, 677);
+      quadraticVertex(1425, 692, 1410, 692);
+      vertex(45, 692);
+      endShape();
+
+      fill(225, 6, 0);
+      rect(1185, 640, 215, 30, 12);
+      noStroke();
+      textSize(20);
+      fill(255, 255, 255);
+      text('back to the map', 1198, 662);
 
     }
   }
-}
-
-
-function silenceInfo(){
-  Infodiv.style.removeProperty("background-color"); 
 }

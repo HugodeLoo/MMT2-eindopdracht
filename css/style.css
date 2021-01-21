@@ -38,11 +38,3 @@ h1 {
     top: -88px;
     left: -170px;
 }
-.moveAble {
-    position: absolute;
-}
-#infodiv {
-  z-index: 10;
-  width: 230px;
-  height: 100px;
-}
