@@ -3,19 +3,16 @@ var placeBubbles = [];
 let timeLineActive = true; myTerminal
 var yearDisplayer = document.getElementById("selectedYear");
 var myTerminal = document.getElementById("myTerminal");
-
-let dataSetF1Races;
-let dataSetF1Circuits;
+var Infodiv = document.getElementById("infodiv");
 
 let dataSetF1;
 var formula1Bold;
-function preload() {
-dataSetF1Races = loadJSON("JSON/races.json");
-dataSetF1Circuits = loadJSON("JSON/circuits.json");
 
+function preload() {
 dataSetF1 = loadJSON("JSON/f1data.json");
 formula1Bold = loadFont('fonts/Formula1-Bold.otf');
 }
+
 function setup() {
   console.log(dataSetF1);
   var myCanvas = createCanvas(1455, 722);
@@ -76,9 +73,15 @@ function mousePressed() {
       yearBubbles[i].clicked();
     }
   }
+  if (timeLineActive == false){
+    for (let i = 0; i < placeBubbles.length; i++) {
+      placeBubbles[i].clicked();
+    }
+  }
   if (mouseX > 1150 && mouseX < 1725 && mouseY > 665 && mouseY < 997.5) {
     clear();
     timeLineActive = true;
+    silenceInfo();
   }
 }
 
@@ -99,8 +102,12 @@ function yearIsSelected(year) {
 
           fill(225, 6, 0);
           ellipse(this.x, this.y, this.r*2, this.r*2);
-          fill(255, 255, 255);
-          text(dataSetF1[this.raceId - 1].circuit.circuitRef, this.x, this.y);
+          for (let j = 0; j < 897; j++) {
+            if(dataSetF1[j].raceId == this.raceId){
+              fill(255, 255, 255);
+              text(dataSetF1[j].circuit.circuitRef, this.x, this.y);
+            }
+          }
         },
         clicked: function(){
           var d = dist(mouseX, mouseY, this.x, this.y);
@@ -127,6 +134,22 @@ function yearIsSelected(year) {
 }
 
 function venueIsSelected(raceId) {
+  for (let i = 0; i < 897; i++) {
+    if(dataSetF1[i].raceId == raceId){
+      myTerminal.innerHTML = dataSetF1[i].circuit.circuitRef;
 
+      var left = (dataSetF1[i].circuit.lng + 235)+"px";
+      var top = (dataSetF1[i].circuit.lat + 35)+"px";
+      
+      Infodiv.style.left = left ;
+      Infodiv.style.top = top;
+      Infodiv.style.backgroundColor = "aqua";
+
+    }
+  }
 }
 
+
+function silenceInfo(){
+  Infodiv.style.removeProperty("background-color"); 
+}

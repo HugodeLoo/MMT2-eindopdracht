@@ -23751,7 +23751,7 @@
     "round": 13,
     "circuit": {
       "circuitRef": "estoril",
-      "name": "AutÌ_dromo do Estoril",
+      "name": "Auto dromo do Estoril",
       "location": "Estoril",
       "country": "Portugal",
       "lat": 215,
@@ -26975,7 +26975,7 @@
     "round": 1,
     "circuit": {
       "circuitRef": "jacarepagua",
-      "name": "AutÌ_dromo Internacional Nelson Piquet",
+      "name": "Autodromo Internacional Nelson Piquet",
       "location": "Rio de Janeiro",
       "country": "Brazil",
       "lat": 502,
@@ -27532,7 +27532,7 @@
     "year": 1984,
     "round": 10,
     "circuit": {
-      "circuitRef": "brands_hatch",
+      "circuitRef": "brands hatch",
       "name": "Brands Hatch",
       "location": "Kent",
       "country": "UK",
@@ -55872,8 +55872,8 @@
     "round": 19,
     "circuit": {
       "circuitRef": "interlagos",
-      "name": "AutÌ_dromo JosÌ© Carlos Pace",
-      "location": "SÌ£o Paulo",
+      "name": "Auto dromo Josè Carlos Pace",
+      "location": "Sao Paulo",
       "country": "Brazil",
       "lat": 546,
       "lng": 450
