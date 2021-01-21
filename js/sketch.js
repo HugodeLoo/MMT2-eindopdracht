@@ -1,15 +1,23 @@
 var yearBubbles = [];
-let timeLineActive = true;
+var placeBubbles = [];
+let timeLineActive = true; myTerminal
 var yearDisplayer = document.getElementById("selectedYear");
+var myTerminal = document.getElementById("myTerminal");
+
 let dataSetF1Races;
 let dataSetF1Circuits;
+
+let dataSetF1;
 var formula1Bold;
 function preload() {
-dataSetF1Races = loadJSON("http://student-1820877loo.mamdt.com/MMT-eindopdracht/JSON/races.json");
-dataSetF1Circuits = loadJSON("http://student-1820877loo.mamdt.com/MMT-eindopdracht/JSON/circuits.json");
-formula1Bold = loadFont('http://student-1820877loo.mamdt.com/MMT-eindopdracht/fonts/Formula1-Bold.otf');
+dataSetF1Races = loadJSON("JSON/races.json");
+dataSetF1Circuits = loadJSON("JSON/circuits.json");
+
+dataSetF1 = loadJSON("JSON/f1data.json");
+formula1Bold = loadFont('fonts/Formula1-Bold.otf');
 }
 function setup() {
+  console.log(dataSetF1);
   var myCanvas = createCanvas(1455, 722);
   myCanvas.parent("canvasHolder");
   textFont(formula1Bold);
@@ -61,6 +69,7 @@ function drawTimeline() {
     yearBubbles[i].display(i);
   }
 }
+
 function mousePressed() {
   if( timeLineActive == true){
     for (let i = 0; i < yearBubbles.length; i++) {
@@ -72,35 +81,41 @@ function mousePressed() {
     timeLineActive = true;
   }
 }
+
 function yearIsSelected(year) {
   yearDisplayer.innerHTML = year;
-  let currentRace;
-  let currentPlace;
-  var currentPlaceID;
-  let currentDate;
-  let glblX;
-  let glblY;
-  for (let i = 0; i < 996; i++) {
+  placeBubbles = [];
+  ncrementer = 0;
+  for (let i = 0; i < 897; i++) {
 
-    if(dataSetF1Races[i].year === year) {
-      currentRace = dataSetF1Races[i].round;
-      currentPlaceID = dataSetF1Races[i].circuitId;
-      currentPlace = dataSetF1Circuits[currentPlaceID - 1];
-      currentDate = dataSetF1Races[i].date;
+    if(dataSetF1[i].year === year) {
 
-      console.log("Race is " + currentRace);
-      console.log("ID is " + currentPlaceID);
-      console.log(currentPlace);
-      console.log("Date is " + currentDate);
+      placeBubbles[ncrementer] = {
+        x: dataSetF1[i].circuit.lng,
+        y: dataSetF1[i].circuit.lat,
+        r: 5,
+        raceId: dataSetF1[i].raceId,
+        display: function(){
 
-      glblX = currentPlace.lng;
-      glblY = currentPlace.lat;
-      fill(225, 6, 0);
-      ellipse(glblX, glblY, 10, 10);
-      fill(255, 255, 255);
-      text(currentPlace.circuitRef, glblX, glblY);
+          fill(225, 6, 0);
+          ellipse(this.x, this.y, this.r*2, this.r*2);
+          fill(255, 255, 255);
+          text(dataSetF1[this.raceId - 1].circuit.circuitRef, this.x, this.y);
+        },
+        clicked: function(){
+          var d = dist(mouseX, mouseY, this.x, this.y);
+          if(d < this.r){
+            venueIsSelected(this.raceId);
+          }
+        }
+      }
+      ncrementer = ncrementer + 1;
     }
 
+  }
+  console.log(placeBubbles);
+  for (var j = 0; j < placeBubbles.length; j++) {
+    placeBubbles[j].display();
   }
 
   fill(225, 6, 0);
@@ -108,6 +123,10 @@ function yearIsSelected(year) {
   textSize(20);
   fill(255, 255, 255);
   text('back to the timeline', 1165, 687);
+
+}
+
+function venueIsSelected(raceId) {
 
 }
 
