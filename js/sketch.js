@@ -1,47 +1,45 @@
-var yearBubbles = [];
-var placeBubbles = [];
-var listPlaceBubbles = [];
+let yearBubbles = [];
+let placeBubbles = [];
+let listPlaceBubbles = [];
 let timeLineActive = true;
 let raceOverlay = false;
-var yearDisplayer = document.getElementById("selectedYear");
-var myTerminal = document.getElementById("myTerminal");
+let yearDisplayer = document.getElementById("selectedYear");
 
 let dataSetF1;
-var formula1Bold;
+let formula1Bold;
 
 function preload() {
-dataSetF1 = loadJSON("JSON/f1data.json");
-formula1Bold = loadFont('fonts/Formula1-Bold.otf');
+  dataSetF1 = loadJSON("JSON/f1data.json");
+  formula1Bold = loadFont('fonts/Formula1-Bold.otf');
 }
 
 function setup() {
-  console.log(dataSetF1);
-  var myCanvas = createCanvas(1455, 722);
+  let myCanvas = createCanvas(1455, 722);
   myCanvas.parent("canvasHolder");
   textFont(formula1Bold);
-  for(var i = 0; i < 64; i++){
+  for (var i = 0; i < 64; i++) {
     yearBubbles[i] = {
       x: 0,
       y: 317,
       r: 15,
       year: 0,
-      display: function(j){
-        this.x = j * this.r*1.5 + this.r*1.25;
+      display: function (j) {
+        this.x = j * this.r * 1.5 + this.r * 1.25;
         if (j % 2 == 1) {
           this.y = 403;
         }
         fill(225, 6, 0);
         strokeWeight(10);
-        ellipse(this.x, this.y, this.r*2, this.r*2);
+        ellipse(this.x, this.y, this.r * 2, this.r * 2);
         this.year = j + 1950;
         textSize(10);
         fill(0, 0, 0);
         strokeWeight(0);
-        text(this.year, this.x - this.r, this.y + this.r/2.8);
+        text(this.year, this.x - this.r, this.y + this.r / 2.8);
       },
-      clicked: function(){
-        var d = dist(mouseX, mouseY, this.x, this.y);
-        if(d < this.r){
+      clicked: function () {
+        let d = dist(mouseX, mouseY, this.x, this.y);
+        if (d < this.r) {
           clear();
           timeLineActive = false;
           yearIsSelected(this.year);
@@ -53,7 +51,7 @@ function setup() {
 
 function draw() {
   background(48, 48, 48, 0.0);
-  if(timeLineActive == true) {
+  if (timeLineActive == true) {
     drawTimeline();
   }
 }
@@ -69,19 +67,19 @@ function drawTimeline() {
 }
 
 function mousePressed() {
-  if( timeLineActive == true){
+  if (timeLineActive == true) {
     for (let i = 0; i < yearBubbles.length; i++) {
       yearBubbles[i].clicked();
     }
   }
 
-  if (timeLineActive == false){
+  if (timeLineActive == false) {
     for (let i = 0; i < placeBubbles.length; i++) {
       placeBubbles[i].clicked();
     }
-    
+
     if (raceOverlay == false) {
-        for (let j = 0; j < listPlaceBubbles.length; j++) {
+      for (let j = 0; j < listPlaceBubbles.length; j++) {
         listPlaceBubbles[j].clicked();
       }
     }
@@ -108,54 +106,53 @@ function yearIsSelected(year) {
   placeBubbles = [];
   listPlaceBubbles = [];
   ncrementer = 0;
-  console.log(dataSetF1.result.length);
   for (let i = 0; i < dataSetF1.result.length; i++) {
 
-    if(dataSetF1.result[i].year === year) {
+    if (dataSetF1.result[i].year === year) {
 
       placeBubbles[ncrementer] = {
         x: dataSetF1.result[i].circuit.lng,
         y: dataSetF1.result[i].circuit.lat,
         r: 5,
         raceId: dataSetF1.result[i].raceId,
-        display: function(){
+        display: function () {
           let newRed = 255 - dataSetF1.result[i].round * 15;
           fill(newRed, 6, 0);
-          ellipse(this.x, this.y, this.r*2, this.r*2);
+          ellipse(this.x, this.y, this.r * 2, this.r * 2);
           for (let j = 0; j < 897; j++) {
-            if(dataSetF1.result[j].raceId == this.raceId){
+            if (dataSetF1.result[j].raceId == this.raceId) {
               textSize(12);
               fill(255, 255, 255);
               text(dataSetF1.result[j].circuit.circuitRef, this.x, this.y);
             }
           }
         },
-        clicked: function(){
+        clicked: function () {
           var d = dist(mouseX, mouseY, this.x, this.y);
-          if(d < this.r){
+          if (d < this.r) {
             venueIsSelected(this.raceId);
           }
         }
-      } 
+      }
       listPlaceBubbles[ncrementer] = {
         x: 1315,
         y: 49 + 30 * ncrementer,
         wdth: 125,
         hght: 20,
         raceId: dataSetF1.result[i].raceId,
-        display: function(){
+        display: function () {
           let newRed = 255 - dataSetF1.result[i].round * 15;
           fill(newRed, 6, 0);
           rect(this.x, this.y, this.wdth, this.hght, 10);
           for (let j = 0; j < 897; j++) {
-            if(dataSetF1.result[j].raceId == this.raceId){
+            if (dataSetF1.result[j].raceId == this.raceId) {
               textSize(12);
               fill(255, 255, 255);
               text(dataSetF1.result[j].circuit.circuitRef, this.x + 8, this.y + 14);
             }
           }
         },
-        clicked: function(){
+        clicked: function () {
           if (mouseX > this.x && mouseX < this.x + this.wdth && mouseY > this.y && mouseY < this.y + this.hght) {
             venueIsSelected(this.raceId);
           }
@@ -165,8 +162,6 @@ function yearIsSelected(year) {
     }
 
   }
-  console.log(listPlaceBubbles);
-  console.log(placeBubbles);
   drawPlaces();
 
 }
@@ -188,9 +183,10 @@ function drawPlaces() {
 
 function venueIsSelected(raceId) {
   raceOverlay = true;
+  let driverColor = { r: 0, g: 0, b: 0 };
 
   for (let i = 0; i < 897; i++) {
-    if(dataSetF1.result[i].raceId == raceId){
+    if (dataSetF1.result[i].raceId == raceId) {
 
       rect(15, 15, 1425, 692, 20);
 
@@ -200,7 +196,6 @@ function venueIsSelected(raceId) {
       strokeCap(SQUARE);
 
       beginShape();
-
       vertex(500, 30);
       vertex(1410, 30);
       quadraticVertex(1425, 30, 1425, 45);
@@ -210,23 +205,32 @@ function venueIsSelected(raceId) {
       endShape();
 
       let inputDate = Date.parse(dataSetF1.result[i].date);
-      console.log(inputDate);
       let convertedDate = new Date(inputDate);
-      console.log(convertedDate);
       let outputDate = convertedDate.toString();
-      console.log(outputDate);
       let trimmedDate = outputDate.slice(0, 15);
-      console.log(trimmedDate);
 
       noStroke();
       textSize(20);
-      fill(0, 0, 0);
+      fill(driverColor.r, driverColor.g, driverColor.b);
       text(dataSetF1.result[i].name + ', ' + trimmedDate, 30, 40);
-      textSize(40);
-      text('1st ' + dataSetF1.result[i].results[0].driver.forename + ' ' + dataSetF1.result[i].results[0].driver.surname  + ' racing for ' + dataSetF1.result[i].results[0].constructor.name, 30, 120);
-      text('2nd ' + dataSetF1.result[i].results[1].driver.forename + ' ' + dataSetF1.result[i].results[1].driver.surname  + ' racing for ' + dataSetF1.result[i].results[1].constructor.name, 30, 180);
-      text('3rd ' + dataSetF1.result[i].results[2].driver.forename + ' ' + dataSetF1.result[i].results[2].driver.surname  + ' racing for ' + dataSetF1.result[i].results[2].constructor.name, 30, 240);
-      
+
+      for (let j = 0; j < dataSetF1.result[i].results.length; j++) {
+
+        if (dataSetF1.result[i].results[j].driver.isDriverActive == true) {
+          driverColor.b = 255;
+        }
+        else {
+          driverColor.b = 0;
+        }
+        textSize(40);
+        fill(driverColor.r, driverColor.g, driverColor.b);
+        text(
+          dataSetF1.result[i].results[j].position + '. ' +
+          dataSetF1.result[i].results[j].driver.forename + ' ' +
+          dataSetF1.result[i].results[j].driver.surname + ' racing for ' +
+          dataSetF1.result[i].results[j].constructor.name, 30, 60 * j + 120
+        );
+      }
 
       fill(225, 6, 0);
       rect(1185, 640, 215, 30, 12);
